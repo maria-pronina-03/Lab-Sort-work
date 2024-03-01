@@ -1,0 +1,136 @@
+
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+
+
+
+template <typename Type >
+void printArray(Type arr[], int size) { // Создается шаблон функции printArray, принимающей массив типа Type и его размер
+    for (int i = 0; i < size; i++) { // Цикл проходит по элементам массива
+        std::cout << arr[i] << " "; // Вывод элементов массива
+    } 
+    std::cout << std::endl;
+}
+
+template <typename Type> 
+void swap(Type& a, Type& b) { // Создается шаблон функции swap для обмена значений переменных типа Type
+    Type temp = a;
+    a = b;
+    b = temp;
+}
+
+template <typename Type>
+int part(Type arr[], int low, int high) {
+    Type pivot = arr[high];  // Разделение массива на две части по опорному элементу
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]); // Обмен значениями элементов
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return (i + 1);
+}
+
+template <typename Type>
+void quickSort(Type arr[], int low, int high) {
+
+    if (low < high) {  //Алгоритм быстрой сортировки
+        int pi = part(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+template <typename Type>
+void bubbleSort(Type arr[], int size) {
+
+    for (int i = 0; i < size - 1; i++) { // Алгоритм сортировки пузырьком
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Обмен значений, если текущий элемент больше следующего
+                swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}
+
+template <typename Type>
+void insertionSort(Type arr[], int size) { // Алгоритм сортировки вставками 
+
+    for (int i = 1; i < size; i++) {
+        Type key = arr[i];
+        int j = i - 1;
+        
+        while (j >= 0 && arr[j] > key) {
+            // Сдвиг элементов вправо для вставки нового значения
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+int main() {
+    srand(time(0));
+
+    int size; // Создание переменной size для хранения размера массива
+    std::cout << "Enter the size of the array: "; // Ввод размера массива с клавиатуры
+    std::cin >> size;
+
+    // Создание трех массивов соответствующего размера
+    int* array1 = new int[size];
+    char* array2 = new char[size];
+    double* array3 = new double[size];
+
+    // Заполнение массивов случайными числами
+    for (int i = 0; i < size; i++) {
+        array1[i] = rand() % 100;
+        array2[i] = 'A' + rand() % 26;
+        array3[i] = (double)rand() / RAND_MAX;
+    }
+
+    // Quick Sort
+    std::cout << "Array of int type before sorting: ";
+    printArray(array1, size);
+    clock_t start = clock();
+    quickSort(array1, 0, size - 1);
+    clock_t end = clock();
+    std::cout << "Array of int type after sorting: ";
+    printArray(array1, size);
+    double timeTaken = double(end - start) / CLOCKS_PER_SEC;
+    std::cout << "time spent Quick Sort for int: " << timeTaken << " sec" << std::endl;
+
+    // Bubble Sort
+    std::cout << "Array of char type before sorting: ";
+    printArray(array2, size);
+    start = clock();
+    bubbleSort(array2, size);
+    end = clock();
+    std::cout << "Array of char type after sorting: ";
+    printArray(array2, size);
+    timeTaken = double(end - start) / CLOCKS_PER_SEC;
+    std::cout << "time spent Bubble Sort for char: " << timeTaken << " sec" << std::endl;
+
+    // Insertion Sort
+    std::cout << "Array of double type before sorting: ";
+    printArray(array3, size);
+    start = clock();
+    insertionSort(array3, size);
+    end = clock();
+    std::cout << "Array of double type after sorting: ";
+    printArray(array3, size);
+    timeTaken = double(end - start) / CLOCKS_PER_SEC;
+    std::cout << "time spent Insertion Sort for double: " << timeTaken << " sec" << std::endl;
+  
+
+    delete[] array1;
+    delete[] array2;
+    delete[] array3;
+
+    return 0;
+}
